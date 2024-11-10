@@ -3,8 +3,7 @@
   padding: 0;
 }
 
-h1 {
-  margin-top: 50vh;
-  text-align: center;
-  font-size: xx-large;
+body {
+  width: 100vw;
+  height: 100vh;
 }
