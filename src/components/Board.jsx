@@ -129,18 +129,18 @@ export default function Board() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-screen p-4">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-screen p-4 bg-black">
       {/* Game info section */}
-      <div className="game-info flex flex-col items-center col-span-1 ">
-        <h1 className="font-mono font-bold text-lg sm:text-2xl mb-4">{`${player}'s Turn`}</h1>
-        <div className="flex justify-between w-full">
-          <h5 className="font-mono text-sm sm:text-lg my-1 px-4">{`X score: ${scoreX}`}</h5>
-          <h5 className="font-mono text-sm sm:text-lg my-1 px-4">{`O score: ${scoreY}`}</h5>
+      <div className="game-info flex flex-col items-center col-span-1 w-full lg:mt-12">
+        <h1 className="font-doto-bold text-2xl md:text-3xl mb-4 text-fontColor">{`${player}'s Turn`}</h1>
+        <div className="flex justify-between w-3/4 lg:w-full ">
+          <h5 className="font-doto-regular text-base sm:text-2xl my-1 px-4 text-fontColor">{`X score: ${scoreX}`}</h5>
+          <h5 className="font-doto-regular text-base sm:text-2xl my-1 px- text-fontColor">{`O score: ${scoreY}`}</h5>
         </div>
       </div>
 
       {/* Board Section */}
-      <div className="board flex flex-col items-center col-span-1 ">
+      <div className="board flex flex-col items-center mx-auto my-0 col-span-1 w-4/5 lg:max-w-full lg:mt-12">
         <div className="board w-full flex justify-center items-center flex-col">
           {[0, 1, 2].map((row) => (
             <div key={row} className="board-row flex w-full">
@@ -152,6 +152,8 @@ export default function Board() {
                     index={index}
                     player={squares[index]}
                     onSquareClick={handleSquareClick}
+                    // Apply conditional sizing for squares
+                    className="square flex-1 aspect-square border-2 border-black flex items-center justify-center rounded-lg text-xl md:text-2xl lg:text-4xl m-0.5"
                   />
                 );
               })}
@@ -161,8 +163,9 @@ export default function Board() {
         <div className="flex items-center justify-center space-x-2 mt-4">
           <button
             type="button"
-            className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2"
+            className="disabled:opacity-80 disabled:hover:bg-green-700 disabled:cursor-not-allowed focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2"
             onClick={newGame}
+            disabled={scoreX == 0 && scoreY == 0}
           >
             New Game
           </button>
@@ -190,22 +193,36 @@ export default function Board() {
       </div>
 
       {/* Score board section */}
-      <div className="score-board  flex-col items-center justify-start col-span-1 md:flex">
-        <h2 className="font-bold text-xl mb-4">Scoreboard</h2>
+      <div className="score-board flex-col items-center justify-start col-span-1 md:flex w-full lg:mt-12">
+        <h2 className="font-doto-bold text-xl mb-4 text-fontColor">
+          Scoreboard
+        </h2>
         <table className="w-full border-collapse">
           <thead>
             <tr>
-              <th className="border px-4 py-2">Round</th>
-              <th className="border px-4 py-2">X Score</th>
-              <th className="border px-4 py-2">O Score</th>
+              <th className="font-doto border px-4 py-2 text-fontColor">
+                Round
+              </th>
+              <th className="font-doto border px-4 py-2 text-fontColor">
+                X Score
+              </th>
+              <th className="font-doto border px-4 py-2 text-fontColor">
+                O Score
+              </th>
             </tr>
           </thead>
           <tbody>
             {scoreboard.map((entry, index) => (
               <tr key={index}>
-                <td className="border px-4 py-2 text-center">{entry.round}</td>
-                <td className="border px-4 py-2 text-center">{entry.scoreX}</td>
-                <td className="border px-4 py-2 text-center">{entry.scoreY}</td>
+                <td className="font-doto border px-4 py-2 text-center  text-fontColor">
+                  <span>{entry.round}</span>
+                </td>
+                <td className="font-doto border px-4 py-2 text-center text-fontColor">
+                  <span>{entry.scoreX}</span>
+                </td>
+                <td className="font-doto border px-4 py-2 text-center text-fontColor">
+                  <span>{entry.scoreY}</span>
+                </td>
               </tr>
             ))}
           </tbody>

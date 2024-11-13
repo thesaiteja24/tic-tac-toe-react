@@ -1,3 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .font-doto {
+    @apply font-mono;
+    font-family: "Doto", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings: "ROND" 0;
+  }
+}
+
+/* Define specific weights if needed */
+@layer components {
+  .font-doto-bold {
+    @apply font-doto;
+    font-weight: 700;
+  }
+
+  .font-doto-regular {
+    @apply font-doto;
+    font-weight: 400;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
