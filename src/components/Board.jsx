@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Square from "./Square";
-import AnnounceWinner from "./AnnounceWinner";
+import GameInfo from "./GameInfo";
+import Scoreboard from "./Scoreboard";
 
 export default function Board() {
   const [player, setPlayer] = useState("X");
   const [squares, setSquares] = useState(Array(9).fill(null));
-  const [winner, setWinner] = useState(null);
+  const [result, setResult] = useState(null);
   const [scoreX, setScoreX] = useState(0);
   const [scoreY, setScoreY] = useState(0);
   const [round, setRound] = useState(1);
@@ -13,7 +14,7 @@ export default function Board() {
   console.log(squares);
 
   function handleSquareClick(index) {
-    if (squares[index] || winner) return;
+    if (squares[index] || result) return;
     const newSquares = squares.slice();
     newSquares[index] = player;
     setSquares(newSquares);
@@ -21,53 +22,53 @@ export default function Board() {
   }
 
   useEffect(() => {
-    // Only proceed if there's no winner yet
-    if (!winner) {
+    // Only proceed if there's no result yet
+    if (!result) {
       const hasWinner =
         checkRow(squares) || checkCol(squares) || checkDiagonal(squares);
 
-      // Only check for a draw if there's no winner after the win checks
+      // Only check for a draw if there's no result after the win checks
       if (!hasWinner) {
         checkDraw(squares);
       }
     }
-  }, [squares, winner]);
+  }, [squares, result]);
 
-  // Check if there's a winner in any row
+  // Check if there's a result in any row
   function checkRow(S) {
     for (let i = 0; i < S.length; i += 3) {
       const row = [S[i], S[i + 1], S[i + 2]];
       if (row.every((cell) => cell === "X")) {
         updateScore("X");
-        setWinner("X");
+        setResult("X");
         return true;
       } else if (row.every((cell) => cell === "O")) {
         updateScore("O");
-        setWinner("O");
+        setResult("O");
         return true;
       }
     }
     return false;
   }
 
-  // Check if there's a winner in any column
+  // Check if there's a result in any column
   function checkCol(S) {
     for (let i = 0; i < 3; i++) {
       const col = [S[i], S[i + 3], S[i + 6]];
       if (col.every((cell) => cell === "X")) {
         updateScore("X");
-        setWinner("X");
+        setResult("X");
         return true;
       } else if (col.every((cell) => cell === "O")) {
         updateScore("O");
-        setWinner("O");
+        setResult("O");
         return true;
       }
     }
     return false;
   }
 
-  // Check if there's a winner in any diagonal
+  // Check if there's a result in any diagonal
   function checkDiagonal(S) {
     const diagonals = [
       [S[0], S[4], S[8]],
@@ -76,34 +77,34 @@ export default function Board() {
     for (const diag of diagonals) {
       if (diag.every((cell) => cell === "X")) {
         updateScore("X");
-        setWinner("X");
+        setResult("X");
         return true;
       } else if (diag.every((cell) => cell === "O")) {
         updateScore("O");
-        setWinner("O");
+        setResult("O");
         return true;
       }
     }
     return false;
   }
 
-  // Check if all squares are filled and there's no winner
+  // Check if all squares are filled and there's no result
   function checkDraw(S) {
     if (S.every((cell) => cell != null)) {
-      setWinner("Draw");
+      setResult("Draw");
     }
   }
 
-  // Update the score of the winner
-  function updateScore(winner) {
-    winner === "X" ? setScoreX(scoreX + 1) : setScoreY(scoreY + 1);
+  // Update the score of the result
+  function updateScore(result) {
+    result === "X" ? setScoreX(scoreX + 1) : setScoreY(scoreY + 1);
   }
 
   // to reset the game without changing score or round number if the game is ongoing
   function reset() {
     setSquares(Array(9).fill(null));
     setPlayer("X");
-    setWinner(null);
+    setResult(null);
   }
 
   // start new game and update the scoreboard
@@ -116,7 +117,7 @@ export default function Board() {
     setRound(round + 1);
     setSquares(Array(9).fill(null));
     setPlayer("X");
-    setWinner(null);
+    setResult(null);
     setScoreX(0);
     setScoreY(0);
   }
@@ -125,19 +126,18 @@ export default function Board() {
   function playAgain() {
     setSquares(Array(9).fill(null));
     setPlayer("X");
-    setWinner(null);
+    setResult(null);
   }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-screen p-4 bg-black">
-      {/* Game info section */}
-      <div className="game-info flex flex-col items-center col-span-1 w-full lg:mt-12">
-        <h1 className="font-doto-bold text-2xl md:text-3xl mb-4 text-fontColor">{`${player}'s Turn`}</h1>
-        <div className="flex justify-between w-3/4 lg:w-full ">
-          <h5 className="font-doto-regular text-base sm:text-2xl my-1 px-4 text-fontColor">{`X score: ${scoreX}`}</h5>
-          <h5 className="font-doto-regular text-base sm:text-2xl my-1 px- text-fontColor">{`O score: ${scoreY}`}</h5>
-        </div>
-      </div>
+      {/* Game info */}
+      <GameInfo
+        player={player}
+        scoreX={scoreX}
+        scoreY={scoreY}
+        result={result}
+      />
 
       {/* Board Section */}
       <div className="board flex flex-col items-center mx-auto my-0 col-span-1 w-4/5 lg:max-w-full lg:mt-12">
@@ -152,7 +152,6 @@ export default function Board() {
                     index={index}
                     player={squares[index]}
                     onSquareClick={handleSquareClick}
-                    // Apply conditional sizing for squares
                     className="square flex-1 aspect-square border-2 border-black flex items-center justify-center rounded-lg text-xl md:text-2xl lg:text-4xl m-0.5"
                   />
                 );
@@ -169,7 +168,7 @@ export default function Board() {
           >
             New Game
           </button>
-          {winner === null ? (
+          {result === null ? (
             <button
               type="button"
               className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2"
@@ -187,47 +186,10 @@ export default function Board() {
             </button>
           )}
         </div>
-        <div className="mt-4">
-          <AnnounceWinner winner={winner} />
-        </div>
       </div>
 
       {/* Score board section */}
-      <div className="score-board flex-col items-center justify-start col-span-1 md:flex w-full lg:mt-12">
-        <h2 className="font-doto-bold text-xl mb-4 text-fontColor">
-          Scoreboard
-        </h2>
-        <table className="w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="font-doto border px-4 py-2 text-fontColor">
-                Round
-              </th>
-              <th className="font-doto border px-4 py-2 text-fontColor">
-                X Score
-              </th>
-              <th className="font-doto border px-4 py-2 text-fontColor">
-                O Score
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {scoreboard.map((entry, index) => (
-              <tr key={index}>
-                <td className="font-doto border px-4 py-2 text-center  text-fontColor">
-                  <span>{entry.round}</span>
-                </td>
-                <td className="font-doto border px-4 py-2 text-center text-fontColor">
-                  <span>{entry.scoreX}</span>
-                </td>
-                <td className="font-doto border px-4 py-2 text-center text-fontColor">
-                  <span>{entry.scoreY}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Scoreboard scoreboard={scoreboard} />
     </div>
   );
 }
